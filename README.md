@@ -35,3 +35,21 @@ passw - input box with password mask, with additional mask checkbox that makes t
 ignore"[0|1] - standard input box with checkbox labeled ignore.  when ignore is checked, callback function will be passed null for this parameter.  This is useful for using internal default parameters, while letting the user have a default alternate value, and letting the user save his input but have it ignored.  The 0|1 modifier is the initial setting for the checkbox.
 clear"[0|1] - standard input box with additional checkbox labeled clear.  When clear is checked, the field will revert to starting value upon valid submission (OK)
 checkbox["0|1] - used for 0/1 numeric input.
+
+#freeform (micro) database
+Partly a toy application, but remarkably useful.  
+functional database.  right parameter to all functions is table stored in a noun.  All functions return new data.
+functional approach allows console input of every data operation
+empty database is i.0 0  
+No field definitions.  Number of fields is number in longest record.  
+All data is Maybenum: number or string automatically determined.  
+All fields are lists or null.  Lists can be mixed type.  
+Simple query mode is any field contains any query item (OR within field), and AND between fields.  Unspecified fields are ANY.  
+A not version of simple query is also convenient.  
+Selection may also be done by indexes.
+Edits are done through update_first function.  The first item in filter is updated as if adding a new item.  
+Delete first matched filter item is convenient.  
+Mass updates are done through update_verb.  Each filtered item is passed to a dyadic J verb which can modify any field based on record. The default left verb parameter is the full table, but can be replaced with a provided one. See SAMPLES at bottom of todo.ijs for example update functions.
+Mass deletes are done by saving filters.  
+
+A recordform GUI allows all database operations from the same form.  Possible due to functional structure.  The GUI adds the ability to switch to any variable, save filters as data, or just use them as views, save to disk, viewlimits, and use custom functions based on a domain.
