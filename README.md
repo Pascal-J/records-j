@@ -29,6 +29,8 @@ record definitions including all of the individual field and whole record proces
 #recordform builder
 also built from single line, that is either a record building string or record instance as right parameter, and some form specific parameters (boxed or in multicut format) as left parameter.  A recordform will callback a provided function, once all of the recordfield inputs are valid.   A recordform "control" is a vertical grid space (Jqt term that could easily be replaced by a html table row) that renders a record field, including space for help regarding the field (also defaults as tooltip content), that serves double duty for reporting field validation errors.  the form building parameters primarily provide this info, and also provide optional starting values for the fields.
 
+This is a major motivator for the very powerful record system.  Recordforms provide a visual interface to any function.  It is also a powerful and relatively easy means of explaining a function/process.  Recordforms are also useful in sequencing several function calls from a single parameter collection.
+
 #recordform controls
 edit - default standard input box.  can pass edit password to have input masked.
 passw - input box with password mask, with additional mask checkbox that makes the mask optional.
@@ -53,3 +55,12 @@ Mass updates are done through update_verb.  Each filtered item is passed to a dy
 Mass deletes are done by saving filters.  
 
 A recordform GUI allows all database operations from the same form.  Possible due to functional structure.  The GUI adds the ability to switch to any variable, save filters as data, or just use them as views, save to disk, viewlimits, and use custom functions based on a domain.
+
+#GUI form builder
+A GUI form builder is also provided that uses a recordform to create the one line form creation commands for your own forms.
+A preview button launches the generated form automatically.
+The fields button is a bit of a toy, but it launches another GUI builder that uses the freeform database editor to add to and modify to the field list.  While this isn't strictly necessary as the master form has a convenient line editor for the same purpose, it does show how to create master-sub form relationships (for one to many or other subform purposes), and shows cross form communication updating fields and console area of the master from from subform edits.
+
+formbuilderception can be achieved by graphically editing a version of the formbuilder with this command:
+
+f =. New_formbuilder_ buildFPsample_formbuilder_ a:
