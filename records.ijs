@@ -21,10 +21,10 @@ variable coding/compression of records is possible in binary format
 
 NB. default: boxed delimited members
 NB. indirect_typesys_ =: 1 : '(loc&u)@:[ apply ]'
-
-coclass__OOP 'record'
- MYDIR =: getpath_j_  '\/' rplc~ > (4!:4<'thisfile'){(4!:3)  thisfile=:'' NB. boilerplate to set the working directory
+MYDIR =: getpath_j_  '\/' rplc~ > (4!:4<'thisfile'){(4!:3)  thisfile=:'' NB. boilerplate to set the working directory
 require MYDIR , 'typesys.ijs'
+coclass__OOP 'record'
+
 coinsert 'typesys'
 
 reduce =: 1 : '<"_1@[ ([: u boxscan ,) <@:]'
@@ -97,7 +97,7 @@ ORdef_z_ =: ".@[^:(_1< 4!:0@<@[)
 coclass__OOP 'recordform'
 coinsert 'record'
 
-require MYDIR , 'ftimer.ijs'
+require MYDIR_base_ , 'ftimer.ijs'
 coinsert 'form'
 NB.FORMPARAMS =: DEF_record_ 'name ; title ; callback pD&d 3&evalto ; initvals ; ctrllist edit&d ; instructions ; tooltips"'
 NB. FORMPARAMS =: DEF_record_ 'pass ; password for life ;pD@lr ; ; passw`edit ; enter long password you will remember`numbers are good	96 59&cut 7&count	[: linearize@:(dltb"1) leaf >^:(1=#)each	'
@@ -291,7 +291,7 @@ coclass__OOP 'consoleform'
 
 coinsert 'record'
 coinsert 'typesys'
-require MYDIR_record_ , 'xhtml.ijs'
+require MYDIR_base_ , 'xhtml.ijs'
 coinsert 'xml'
 DIVID =: 0
 getID =: 3 : 'DIVID =: >: DIVID'

@@ -12,6 +12,7 @@ Note 'towards a J type system'
 )
 
 assign_z_ =: 4 : '(x) =: y'
+
 amdt_z_ =: 2 : '(u (v{ ]))`(v"_@:])`]} ]' NB. use u@] for monad amenditems, u@[ for function applied to y instead of v{y.  or u for dyad amenditem.
 ORassign_z_ =: assign`(".@[)@.(_1 < 4!:0@<@[)
 assignwith_z_ =: 1 : ('y assign u (y~ [ ]) :: ((i.0)"1) 1';':';'y assign x u (y~ [ ]) :: ((i.0)"1) 1')
@@ -26,12 +27,15 @@ coclass 'OOP'
 OOP_z_ =: <'OOP'
 coclass_z_ =: 18!:4@boxxopen@:[ ((('_OOP_' ,~ 'C' ,  ]) assign boxopen)^:(0 = L.))
 coclass =: 18!:4@boxxopen@:[ ((('_OOP_' ,~  'C' ,  ]) assign (][ coerase)@:boxopen)^:(0 = L.))
+codestroy_z_ =: (coerase@coname ] destroy :: ])
+reassign_z_ =: ( assign [ codestroy@:[ :: ])
 coinsert_z_ =: 3 : 0
 n=. ;: :: ] y
  p=. ; (, 18!:2) @ boxopen each n
  p=. ~. ( 18!:2 coname''), p
 (p /: p = <,'z') 18!:2 coname''
 )
+
 New =: 3 : 'y conew coname '''''
 loc =: (,&'_'@[ ,&'_'@, ":@>@])"1 0
 locs =: 1 : 'm loc 18!:5 '''''

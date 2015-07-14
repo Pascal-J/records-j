@@ -106,7 +106,7 @@ r =. dltb leaf ';' multicut RPsample
 NB.r =. (';',~LF) multicut RPsample
 fp =.'`;' multicut 'fbsample;recordform builder;Use fields button to add fields using ffdb interface;', 'fcb' , ';edit`edit`edit`edit`edit`ignore"1`ignore"1`auto"0`auto"0`autom"1'
 
-fpp =.  (' ';' ';' ';'pDlr_recordform_';' ';'FP' locs ;'RPsample' locs;' ';' ';' ')
+fpp =.  (' ';' ';' ';'pDlr_recordform_';' ';'' ;'';' ';' ';' ')
  pD  '1&level'&cV each |: r , fpp,: (> {: fp)
  ( (LF,'|,') unmulticut <"1 RPsample =: '1&level'&cV each  |: r , fpp,: (> {: fp)) <@:[ amdt _1 fpp
 NB.( (LF,'|,') unmulticut <"1 RPsample =: |: r , fpp,: (> {: fp)) <@:[ amdt _1 fpp
@@ -117,7 +117,7 @@ NB. pD '`'unmulticut defs =.  dflt&('FP RP';' ';' ';' ';'pDlr_recordform_';' ';'
  ] assignwithC (' ';' ';' ';'pDlr_recordform_';' ';'FP' locs ;'RP' locs;' ';' ';(LF,'|,') unmulticut <"1 RP) 'FP'
  pD '`'unmulticut defs =.  dflt&FP  '96&cut 10&count  _ 0 _ _ _ _ _ _ _ _&copies' c y
 pD callback =. 'fcb' locs
-fpi =. 'form name (usually just seen in error messages)`form titlebar caption`upper left text prompt`function called when OK pressed`Caption for OK button (can leave blank)`localized Variable that will save these form parameters.  If Auto set, will use default form (FP) variable. locs function usually used to automatically localize.`localized Variable that saves just the recordF parameters.  Auto will will use default form (RP) variable.`Coercer functions applied to whole record prior to individual field coercers.  Auto will add null values to any missing fields (individual fields can have defaults), force a limit on parameters, and provide a backtick delimited string interface to the record.`J function will be called after all coercers.  It should return what is intended to be valid record input.`The fields button will use ffdb interface to edit this content.  Here, one line per field.  Name [coercers],[validators] (separate coercers from validators with comma)|initial value|control type|Explanation Text|Tooltip .  If all fields have initial blank, and are edit controls, and you don''t want explanation text, then only field name needs input.  If you input some initvals/controls/explanations/tooltips, input values for all.  Auto will ignore this field, and read from variable name when fields button, and automatically update this field and variable when field editor OK is pressed.'
+fpi =. 'form name (usually just seen in error messages. but must be 2 letters+ long)`form titlebar caption`upper left text prompt`function called when OK pressed`Caption for OK button (can leave blank)`localized Variable that will save these form parameters.  If Auto set, will use default form (FP) variable. locs function usually used to automatically localize.`localized Variable that saves just the recordF parameters.  Auto will will use default form (RP) variable.`Coercer functions applied to whole record prior to individual field coercers.  Auto will add null values to any missing fields (individual fields can have defaults), force a limit on parameters, and provide a backtick delimited string interface to the record.`J function will be called after all coercers.  It should return what is intended to be valid record input.`The fields button will use ffdb interface to edit this content.  Here, one line per field.  Name [coercers],[validators] (separate coercers from validators with comma)|initial value|control type|Explanation Text|Tooltip .  If all fields have initial blank, and are edit controls, and you don''t want explanation text, then only field name needs input.  If you input some initvals/controls/explanations/tooltips, input values for all.  Auto will ignore this field, and read from variable name when fields button, and automatically update this field and variable when field editor OK is pressed.'
 co =: (callback, ';OK will print form parameters in J console and below.  Fields provides an advanced database interface to editing the recordF content.  Preview will launch the generated form.') DEF_consoleform_ r =: ('fb;recordform builder;Use fields button to add fields using ffdb interface;', callback , ';', ('`'unmulticut defs),';edit`edit`edit`edit`edit`auto"0`auto"0`auto"1`auto"0`autom"0;',fpi ) DEFfromR_recordform_ PARAMS
 (('gopreview' locs),';Preview;10;1') DEF_buttonadd_(('gofields' locs),';fields;10;1') DEF_buttonadd_ r
 start_consoleform_ co
@@ -141,6 +141,7 @@ y
 fcb =: 3 : 0
 if. a: -: y do. y return. end.
 rp =. ('RP&d localized' cV  ''"_^:('__' -:] )RP_var__PARAMS  y)
+y assign~ ('FP'"_^:('__' -:] )FP_var__PARAMS  y)
 if. '__' -.@-: recordF__PARAMS RETURN__r do. (rp) assign pD ',|' (multicut dltb)"1 > cutLF recordF__PARAMS y end.
 ('recordF input',&< ;: 'name initval control explanation tooltip') hout__co rp~
  rcnt =. (": # >0 {"1 rp~),'&count'
@@ -155,8 +156,12 @@ NB. ';' unmulticut '`' unmulticut "1
 gopreview =: 3 : 0
 o =.  pD fcb y
 pD $ each o
+NB. reassign crashes J804
+NB.'rect' reassign DEF_record_ pD dltb 1 {:: o
+NB.start__rt a: [ 'rt' reassign (dltb 0{:: o) DEFfromR__Crecordform__OOP rect
 rect =: DEF_record_ pD dltb 1 {:: o
 start__rt a: [ rt =: (dltb 0{:: o) DEFfromR__Crecordform__OOP rect
+
 )
 gofields =: 3 : 0
 NB.vh =. cut 'FP RP'"_ ^:(0=#) var_holders__PARAMS y
