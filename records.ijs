@@ -22,7 +22,7 @@ variable coding/compression of records is possible in binary format
 NB. default: boxed delimited members
 NB. indirect_typesys_ =: 1 : '(loc&u)@:[ apply ]'
 
-coclass 'record'
+coclass__OOP 'record'
  MYDIR =: getpath_j_  '\/' rplc~ > (4!:4<'thisfile'){(4!:3)  thisfile=:'' NB. boilerplate to set the working directory
 require MYDIR , 'typesys.ijs'
 coinsert 'typesys'
@@ -38,6 +38,8 @@ NB. is necessary because it is impossible to change the shape of the values bein
 if. #n do. (x u applyintree (}.n) L:_ _1"(0 (,~ >.) x -&(#@$) a) (a =. ({.n){y)) ({.n)} y
 else. x u y end.
 )
+boxdefine_typesys_ =: (0 : ) 1 : 'cutLF m'
+boxtabdefine_typesys_ =: ( 0 :) 1 : ' '' 9 10&cut'' cV m '
 
 create =: 3 : 0@:(3{. typeparser each each each@:(2&{.),2&}.)  '96 59 9&cut' c
  NB.pD y
@@ -52,8 +54,9 @@ create =: 3 : 0@:(3{. typeparser each each each@:(2&{.),2&}.)  '96 59 9&cut' c
  NB.  LXCOERCEVALS =. 2{. each  ( 2# < a:) ,~  L:3 LXboxes
  COERCIONS =: (a:,&< <'any')rplc~ ' '&joinstring each ('&'&joinstring) each each {. every  LXCOERCEVALS 
  VALIDATIONS =: (a:,&< <'any')rplc~ ' '&joinstring each ('&'&joinstring) each each {: every LXCOERCEVALS
- if. (<'any') *./@:= COERCIONS do. VALverB =: ]  else. VALverB =: (COERCIONS cV each ])  end. 
- if. (<'any') *./@:= VALIDATIONS do. VALverB =: VALverB f. else. VALverB =: (VALIDATIONS vV each  VALverB f.) end.
+NB. if. (<'any') *./@:= COERCIONS do. VALverB =: ]  else. VALverB =: (COERCIONS cV each ])  end. 
+ if. (<'any') *./@:= COERCIONS do. VALverB =: ]  else. VALverB =: (COERCIONS cV leaf ])  end. 
+ if. (<'any') *./@:= VALIDATIONS do. VALverB =: VALverB f. else. VALverB =: (VALIDATIONS vV each  VALverB f.) end. NB. leaf prob needed.
  
 NB. VAL =: 1 : ('u hook ' , VALverB)
  VAL =: VALverB f.
@@ -89,7 +92,7 @@ f2 =. 3 : ( m lrA , ' assign ' , n lrA )
 1 : (f1 f. lrA , '@:] sfX @: u :: (' , f2 f. lrA , ') hook (' , f2 f. lrA , '@:] sfX)')
 )
 NB. (] + 'a' lval) ('a' setWith 5) 8
-
+ORdef_z_ =: ".@[^:(_1< 4!:0@<@[)
 
 coclass__OOP 'recordform'
 coinsert 'record'
@@ -98,7 +101,8 @@ require MYDIR , 'ftimer.ijs'
 coinsert 'form'
 NB.FORMPARAMS =: DEF_record_ 'name ; title ; callback pD&d 3&evalto ; initvals ; ctrllist edit&d ; instructions ; tooltips"'
 NB. FORMPARAMS =: DEF_record_ 'pass ; password for life ;pD@lr ; ; passw`edit ; enter long password you will remember`numbers are good	96 59&cut 7&count	[: linearize@:(dltb"1) leaf >^:(1=#)each	'
-FORMPARAMS =: DEF_record_ 'name ; title ; prompt ; callback pD&d 3&evalto ; initvals ; ctrllist edit&d ; instructions ; tooltips ; okcaption OK&d	96 59&cut 9&count  _ 0 _ _ _ _ _ 6 _&copies	[: linearize@:(dltb"1) leaf >^:(1=#)each'
+pDlr =: pD@:(256 list lr)
+FORMPARAMS =: DEF_record_ 'name ; title ; prompt ; callback pDlr_recordform_&d 3&evalto ; initvals ; ctrllist edit&d ; instructions ; tooltips ; okcaption OK&d	96 59&cut 9&count  _ 0 _ _ _ _ _ 6 _&copies	[: linearize@:(dltb"1) leaf >^:(1=#)each'
 CONTROL =: DEF_record_ 'name ; type ; code'
 
 create =: 3 : 0
@@ -120,13 +124,13 @@ DEFfromR =: ( fullval__FORMPARAMS@:[) 4 : 0 ]  NB. record already made.
 )
 
 formparams =: 3 : 0
- fparams =: y
+ pD fparams =: y
  c =. # LXnames__R
  'fn fc' =: 2 {. y
  form =: fn , > R
  PROMPT =: prompt__FORMPARAMS y
  RETURN =: c $ boxopen initvals__FORMPARAMS y
- LAYOUT =: (;/ i.c) , < c+i.2
+ LAYOUT =: (<"0 i.c) , < c+i.2
  NB. CONTROLS =: (boxopen ctrllist__FORMPARAMS y) (a: ,~ [ ;~ ]) each LXnames__R
  CONTROLS =: (2 {. each '"' cut each boxopen ctrllist__FORMPARAMS y) ,~ each < each LXnames__R  NB. uses " as separator to set code value of controls
  CONTROLS =: CONTROLS , <"1 (] ,. ('button';'button') ,. ])  ;: 'OK CANCEL'
@@ -140,11 +144,14 @@ formparams =: 3 : 0
 
 CNTRLLOOKUP =: (9{a.) cut &> cutLF 0 : 0  NB. name type code
 edit	edit		text
+editm	editm		text
 passw	edit		text
 checkbox	checkbox		value
 console	edith		text
 ignore	edit		text
 clear	edit		text
+auto	edit		text
+autom	editm		text
 )
 indirect=: 4 : 'x i.@0:`apply__R@.(0 < #@]) y'
 layouth =: 3 : '(< ''bin h'';''bin z'') strbracket each  ([: , ctrlswitch &>)  each LAYOUT { each  < CONTROLS' 
@@ -152,7 +159,7 @@ ctrlswitch =: 3 : ' ( > ''GUI'' , leaf ([: {. [: cut leaf type__CONTROL) y)~  y'
 
 NB.GUIedit =: ('cc ' , name__CONTROL ,'L  static center ; cn *', name__CONTROL) ; ('cc ' ,  name__CONTROL ,'C ' , type__CONTROL); ('cc ' , name__CONTROL ,'INST  static left ; cn *', [: (name__CONTROL loc R) eval instructions__FORMPARAMS@:'fparams' lval) ;'set ' , name__CONTROL ,'C' , ' text *' , [: ":@:name__CONTROL 'RETURN' lval
 NB.GUIedit =: ('cc ' , name__CONTROL ,'L  static  ; cn *', name__CONTROL) ; (' cc ' ,  name__CONTROL ,'C ' , type__CONTROL); ('cc ' , name__CONTROL ,'INST  static left ; cn *',  name__CONTROL indirect  'EXPLAINS' lval) ; 'set ' , name__CONTROL ,'C' , ' text *' , [: ":  ( name__CONTROL) indirect 'RETURN' lval
-GUIedit =: ('cc ' , name__CONTROL ,'L static right; cn *', (1 + [: >./ [: # every 'LXnames' inl 'R' lval) {. name__CONTROL ) ; ( ' set ', name__CONTROL ,'L font ', fntfix , '; cc ' ,  name__CONTROL ,'C ' , type__CONTROL); ('bin s ; cc ' , name__CONTROL ,'INST  static panel left; cn *',  name__CONTROL indirect  'EXPLAINS' lval) 
+GUIeditm =: GUIedit =: ('cc ' , name__CONTROL ,'L static right; cn *', (1 + [: >./ [: # every 'LXnames' inl 'R' lval) {. name__CONTROL ) ; ( ' set ', name__CONTROL ,'L font ', fntfix , '; cc ' ,  name__CONTROL ,'C ' , type__CONTROL); ('bin s ; cc ' , name__CONTROL ,'INST  static panel left; cn *',  name__CONTROL indirect  'EXPLAINS' lval) 
 GUIcheckbox =: ('cc ' , name__CONTROL ,'L static right; cn *', (1 + [: >./ [: # every 'LXnames' inl 'R' lval) {. name__CONTROL ) ; ( ' set ', name__CONTROL ,'L font ', fntfix , '; cc ' ,  name__CONTROL ,'C ' , type__CONTROL); ('bin s ; cc ' , name__CONTROL ,'INST  static panel left; cn *',  name__CONTROL indirect  'EXPLAINS' lval) 
 NB. GUIedit =: ('cc ' , name__CONTROL ,'L  static center ; cn *', name__CONTROL) ; ('cc ' ,  name__CONTROL ,'C ' , type__CONTROL); ('bin s ; cc ' , name__CONTROL ,'INST  static left panel ; cn *                                                             '"_) 
 GUIpassw =: 3 : 0
@@ -177,7 +184,18 @@ GUIignore =: 3 : 0 NB. if set ignores text value prior to OK.
  ((0 1&{ ,&< 2&{) o) strbracketF (('cc ' ,  'SEL  checkbox  ; cn *ignore?',~ name__CONTROL) ;  ('set ' ,  'SEL tooltip set will ignore value in editbox' ,~ name__CONTROL) ; 'set ' , (": 'a'~~) ,~ 'SEL value ' ,~ name__CONTROL) y
 
 )
+GUIauto =: 3 : 0 NB. if set ignores text value prior to OK, and will fill it as result of OK or other code.
+ (a=. 'SELVAL' ,~ name__CONTROL y) ORassign code__CONTROL y
+ o =. GUIedit (name__CONTROL ; 'edit' ; code__CONTROL) y
+ ((0 1&{ ,&< 2&{) o) strbracketF (('cc ' ,  'SEL  checkbox  ; cn *auto?',~ name__CONTROL) ;  ('set ' ,  'SEL tooltip set will have code automatically use generated value and update the control' ,~ name__CONTROL) ; 'set ' , (": 'a'~~) ,~ 'SEL value ' ,~ name__CONTROL) y
 
+)
+GUIautom =: 3 : 0 NB. if set ignores text value prior to OK, and will fill it as result of OK or other code.
+ (a=. 'SELVAL' ,~ name__CONTROL y) ORassign code__CONTROL y
+ o =. GUIedit (name__CONTROL ; 'editm' ; code__CONTROL) y
+ ((0 1&{ ,&< 2&{) o) strbracketF (('cc ' ,  'SEL  checkbox  ; cn *auto?',~ name__CONTROL) ;  ('set ' ,  'SEL tooltip set will have code automatically use generated value and update the control' ,~ name__CONTROL) ; 'set ' , (": 'a'~~) ,~ 'SEL value ' ,~ name__CONTROL) y
+
+)
 GUIconsole =:  ( ('cc ' ,  name__CONTROL ,'C ' , 'edith flush; set ', name__CONTROL , 'C text *' , [: ". 'TEXT' ,~ name__CONTROL) ;  ' set ', name__CONTROL , 'C stylesheet *' , 'QTextEdit {color:#00007f;background-color:#ffffee;} ', STYLESHEET_consoleform_"_)  NB. , 'style' xs_xml_ STYLESHEET_consoleform_"_
 GUIconsole =:  ([: < ('cc ' ,  name__CONTROL ,'C ' , 'edith flush; set ', name__CONTROL , 'C text *' , [: ". 'TEXT' ,~ name__CONTROL) )  NB. , 'style' xs_xml_ STYLESHEET_consoleform_"_
 GUIbutton =: ('cc ' ,  name__CONTROL ,'C ' , ';',~ type__CONTROL); 'cn *' , name__CONTROL
@@ -201,6 +219,8 @@ getCtrlvals2 =: (] ({:@] {~ (i.~ {.)) [: |:@:~. (0 2&{)"1@:[  )  NB. x CNTRLLOOK
 setCtrl =: ((#@] {. [) (] ,~ leaf  'set ' , leaf  ('C ' ,~ leaf  (0 {:: L:1 [ ))  , leaf ' *' ,~ leaf CNTRLLOOKUP (2&{::)@:getCtrlvals (1 {:: L:1 [ ) ) ": leaf@:])
 setCtrl =: ((#@] {. [) (] ,~ leaf  'set ' , leaf  ('C ' ,~ leaf  (0 {:: L:1 [ ))  , leaf ' *' ,~ leaf CNTRLLOOKUP getCtrlvals2 (1 {:: L:1 [ ) ) ": leaf@:])
 NB.CONTROLS__r  setCtrl RETURN__r
+NB. can aslo use to set 1 control:
+NB. wd__r S:0 setCtrl__r/ name__PARAMS__Ckeygenform__OOP  (<"1 |: CONTROLS__r ,: RETURN__r)
 recdata =: 3 : '{:"1 (#~ (LXnames__R , each ''C'') e.~ {."1) wdq'
 
 formcodegen2 =: 3 : 0
@@ -208,14 +228,13 @@ wd 'set OKC caption *', okcaption__FORMPARAMS fparams
 wd 'msgs'
 NB.". S:0 pD ((form , '_OKC_button') ,~ '''' , form , '_' , ] , 'C_button'''' assign '"_)   pD
 (form , '_', 'formSHOWexplSEL_button') =: showexplbutton 
-for_i. LXnames__R #~ (<'edit') -: every  CNTRLLOOKUP (1 {:: getCtrlvals) L:_ 0  {. every ;: each ctrllist__FORMPARAMS fparams do.
+for_i. LXnames__R #~ (<'edit') -: every  CNTRLLOOKUP (1 {:: getCtrlvals) L:_ 0  {. every ;: each boxopen ctrllist__FORMPARAMS fparams do.
 
   ( form , '_' , (>i) , 'C_button')  =:  OK NB.(form , '_OKC_button')  
-wd  'set ', (>i) , 'C tooltip *' , > i_index { tooltips__FORMPARAMS fparams
+wd  'set ', (>i) , 'C tooltip *' , > i_index { :: (''"_) tooltips__FORMPARAMS fparams
 end.
-
-
 )
+
 
 showexplbutton =:  3 : 'chkformvalid RETURN [  formSHOWexplSELVAL =: 0 ". formSHOWexplSEL '
 start =:  reset@:formcodegen2@:restart@:formcodegen NB.(start f.)
@@ -227,15 +246,17 @@ restarti =: 3 : 0
 reset =: 3 : 'wd S:0 (<''set formSHOWexplSEL value '' ,  ": formSHOWexplSELVAL), (CONTROLS  setCtrl RETURN), setEXPL EXPLAINS '
 chkformvalid =: 3 : 0
  NB. if. isformvalid RETURN =: recdata a: do. 1 [ reset EXPLAINS =: (# LXnames__R) # <'OK' [RETURN =: VAL__R RETURN else. 
-  
+  		NB. could filter out autos too.
  if. isformvalid RETURN =: recdata a: do. t =.  ((  ((# LXnames__R) {. ((<'ignore') = type__CONTROL each) CONTROLS)) } (0 ,: +/@:(0&".) every  ". each ('SEL' ,~ leaf LXnames__R)) ) } a: ,:~ RETURN
   1 [ reset EXPLAINS =: (# LXnames__R) # <'OK' [RETURN =: VAL__R  RETURN else. 
   EXPLAINS =: EXPLverb RETURN 
   0 [ reset '' end.
 )
 OK =: 3 : 0
- if. chkformvalid RETURN do. 
-  callback t =.  ((  ((# LXnames__R) {. ((<'ignore') = type__CONTROL each) CONTROLS)) } (0 ,: +/@:(0&".) every  ". each ('SEL' ,~ leaf LXnames__R)) ) } a: ,:~ RETURN 
+0 OK y
+:
+ if. chkformvalid RETURN do. pD t =.  ((  ((# LXnames__R) {. ((<'ignore') = type__CONTROL each) CONTROLS)) } (0 ,: +/@:(0&".) every  ". each ('SEL' ,~ leaf LXnames__R)) ) } a: ,:~ RETURN 
+  x (4 : 'x~ y')`(callback@:])@.(0-:[) t=. ((  ((# LXnames__R) {. ((;:'auto autom') e.~ type__CONTROL each) CONTROLS)) } (0 ,: +/@:(0&".) every  ". each ('SEL' ,~ leaf LXnames__R)) ) }  (<'__') ,:~ t
  NB.callback RETURN
    a=. ((  ((# LXnames__R) {. ((<'clear') = type__CONTROL each) CONTROLS)) } (0 ,: +/@:(0&".) every  ". each ('SEL' ,~ leaf LXnames__R)) )
   if. +./ a do. RETURN =:  a }  (initvals__FORMPARAMS fparams) ,:~ RETURN 
@@ -244,7 +265,7 @@ OK =: 3 : 0
  NB. wd 'pclose'
  NB. codestroy ''
 else.
- 
+ a: return.
 end.
  RETURN
 )
@@ -266,7 +287,7 @@ NB. recordform, RF y
 NB. function that overwrites callback__RF
 NB. initial help text to fill console,
 NB. callback function is overridden to use pD_z_ to output to console
-coclass 'consoleform'
+coclass__OOP 'consoleform'
 
 coinsert 'record'
 coinsert 'typesys'
@@ -274,7 +295,7 @@ require MYDIR_record_ , 'xhtml.ijs'
 coinsert 'xml'
 DIVID =: 0
 getID =: 3 : 'DIVID =: >: DIVID'
-PARAMS =: DEF_record_ 'func hout&d 3&evalto; htext ; style		96 59&cut 3&count  	[: linearize@:(dltb"1) leaf >^:(1=#)each'
+PARAMS =: DEF_record_ 'func hout&d 3&evalto; htext ; style		96 59&cut 3&count	[: linearize@:(dltb"1) leaf >^:(1=#)each '
 create =: 3 : 0
  RF =: y
  coname ''
@@ -330,3 +351,35 @@ y
 
 )
 NB. co =: '`;hello world' DEF_consoleform_ r =: ('pass ; password for life;`;pD@lr; ; passw`edit ; enter long password you will remember ` numbers are good') DEF_recordform_ 'password str `7&mthan; other int`3 5&inrange 0&gthan 22&lthan'
+
+coclass__OOP 'buttonadd'
+
+coinsert 'typesys'
+PARAMS =: DEF_record_ 'func 3&evalto ; caption; position _1&d num; checkvalid 0&d num 0 1&inrange	96 59&cut 4&count 	[: linearize@:(dltb"1) leaf >^:(1=#)each'
+create =: 3 : 0
+ RF =: y
+ coname ''
+)
+
+
+DEF =:   4 : 0 
+
+o =. y conew coname ''
+formparams__o  fullval__PARAMS__o x
+RF__o NB. return form instead of self.
+)
+
+formparams =: 3 : 0
+pD np =. >: >./ ; LAYOUT__RF
+if. _1 = position__PARAMS y do. p =.  <: np else. p =. pD position__PARAMS y end.
+LAYOUT__RF =: np ,~ each  amdt ([: I. p&e. every) LAYOUT__RF
+
+NB.LAYOUT__RF =: LAYOUT__RF , < >: >./ ; LAYOUT__RF
+CONTROLS__RF =: CONTROLS__RF , <"1 (] ; ('button') ; ])   caption__PARAMS y
+
+NB. callback__RF =: (func__PARAMS y) inlA NB. ((func__PARAMS y) loc coname '')&apply
+NB.(pD form__RF , '_' , (caption__PARAMS y) , 'C_button__RF') =: [: (func__PARAMS y) inlA 'RETURN' lval
+if. checkvalid__PARAMS y do. ( (caption__PARAMS y) , '__RF') =: (func__PARAMS y) 'OK' inlA__RF 'RETURN' lval
+   else.( (caption__PARAMS y) , '__RF') =: [: (func__PARAMS y) inlA 'RETURN' lval end.
+1
+)

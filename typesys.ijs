@@ -12,21 +12,27 @@ Note 'towards a J type system'
 )
 
 assign_z_ =: 4 : '(x) =: y'
-amdt_z_ =: 2 : '(u (v{ ]))`(v"_)`]} ]' NB. use u@] for monad amenditems, u@[ for function applied to y instead of v{y.  or u for dyad amenditem.
+amdt_z_ =: 2 : '(u (v{ ]))`(v"_@:])`]} ]' NB. use u@] for monad amenditems, u@[ for function applied to y instead of v{y.  or u for dyad amenditem.
 ORassign_z_ =: assign`(".@[)@.(_1 < 4!:0@<@[)
 assignwith_z_ =: 1 : ('y assign u (y~ [ ]) :: ((i.0)"1) 1';':';'y assign x u (y~ [ ]) :: ((i.0)"1) 1')
-assignwithC_z_ =: 2 : ('y assign u (y~ [ ]) :: (n"_) 1';':';'y assign x u (y~ [ ]) :: (n"_) 1 [pD n;($x);y')
+assignwithC_z_ =: 2 : ('y assign u (y~ [ ]) :: (n"_) 1';':';'y assign x u (y~ [ ]) :: (n"_) 1 ')
+NB.uucp=:u:@(7&u:)
+uucp_z_ =:  ucp`]`(ucp@:u:)@.(1 i.~ 2 131072 = 3!:0)"1 :.utf8
+utf8_z_ =: [: ": uucp2`(uucp2 ::u:@:({&a.))@.([: *./ 256&>)^:(1 4 64 e.~ 3!:0)"1 :.uucp
+futf_z_ =: 3 u: ":@:uucp2 :.fucp
+fucp_z_ =: 3 u: uucp2 :.futf
 
 coclass 'OOP'
 OOP_z_ =: <'OOP'
 coclass_z_ =: 18!:4@boxxopen@:[ ((('_OOP_' ,~ 'C' ,  ]) assign boxopen)^:(0 = L.))
-coclass =: 18!:4@boxxopen@:[ ((( 'C' ,  ]) assign boxopen)^:(0 = L.))
+coclass =: 18!:4@boxxopen@:[ ((('_OOP_' ,~  'C' ,  ]) assign (][ coerase)@:boxopen)^:(0 = L.))
 coinsert_z_ =: 3 : 0
 n=. ;: :: ] y
  p=. ; (, 18!:2) @ boxopen each n
  p=. ~. ( 18!:2 coname''), p
 (p /: p = <,'z') 18!:2 coname''
 )
+New =: 3 : 'y conew coname '''''
 loc =: (,&'_'@[ ,&'_'@, ":@>@])"1 0
 locs =: 1 : 'm loc 18!:5 '''''
 
@@ -68,7 +74,14 @@ coinsert 'OOP'
   sfX =: 1 : '][u' 
  Y =: (&{::)(@:])
  X =: (&{::)(@:[)
+multicut =: [:>[:cut leaf/ ([: <"_1 ({&a.)^:(1 4  e.~ 3!:0)@:linearize@:maybenum@:[) (, <) ]
+unmulticut =: [ (([ [^:('' -: ]) leaf joinstring (L:1)) reduce) ": leaf@:] NB. to get string, level must be = to #@[.  Smaler #@[ can be useful.
+unmulticut =:[ (<"_1@[ ([: >@:(([ [^:('' -: ])L:0 joinstring L:1)&.>/) ,) <@:]) ":L:0@:]
+ varargs1 =: 1 : '(m ql '' =. '' , lr@:dflt) ,&< [ }.~ #@]'
+ do0ret1 =: 1&{:: [ [: ". 0&{::
+varargs =: 1 : '[: do0ret1 m varargs1'
 
+tonull =: NULL"_^:(0 = #)
 dvAp =: dvA ')'  NB. examples: (+: + +:)^:(5 < ]) dvAp	 ] 'num ' cp dvAp		] 'num 2&count' cp dvAp		] 'num 2&count' cp dvA '('
 numerify =: 0&".^:(2 = 3!:0)
 maybenum =: 0&".^:(] -:&linearize ":@:numerify)
@@ -86,14 +99,17 @@ intx	[: x:@:intify (,&'x')^:(2 = 3!:0)		64  e.~ 3!:0		Must be extended integer (
 intR	roundify					1 4 64  e.~ 3!:0		Must be roundable to interger
 str	":					2 = 3!:0			Must be string
 box	<"_1					0<L.			Must be boxed
-byteVals	a.&i.			(2=3!:0)+. 0 255&(inrange :: 0:) *. 1 4 e.~ 3!:0	Must be convertable to byte list
-ascii	'unconvertible'&raiseErr`({&a.)@.(0 255&inrange) 	2 = 3!:0			Must be convertable to ascii
+byteVals	a.&i.			(131072=3!:0)+. (2=3!:0)+. 0 255&(inrange :: 0:) *. 1 4 e.~ 3!:0	Must be convertable to byte list
+ascii	utf8`uucp@.(0 255&inrange) 			2 131072 e.~ 3!:0		Must be convertable to ascii/utf8 or superascii
+short	fucp			0:`(0 65536&inrange)@.(1 4 64  e.~ 3!:0)	Must be number in range of 0 to 65536. Unicode and negative numbers will be converted.
 no1dim	linearize					[: -.@:notfalse 1 e.~ $	Must not include any shapes of 1
 items	'itemless' raiseErr ]			0 < #			Must not be blank
 evals	3 : 'y eval'				(2 ~: 3!:0)		Must be evaluatable string (to noun) or other noun (use with coerce not validators)
 cuts	cut					0<L.			Must be boxed or string will be cut on spaces
 words	;:					0<L.			Must be boxed or string will be cut by words
 dltb	[: dltb leaf ('str') cV leaf ]		2 32  -.@e.~ 3!:0		Will trim trailing and leading blanks at leaf level (if string) Coercer intended.
+localized	3 : 'y locs'				'_'&e. *. _2 < 4!:0@:<	Name (str) must be valid and localized
+uucp	uucp					131072 = 3!:0		Must be unicode
 any	]					1:"_			Test will always pass. Any param.	
 )
 NB. separate dyadic (parametrized) typelist for clarity.  Parameters always passed as string. maybenum converts if number is correct, otherwise likely an error.
@@ -109,7 +125,7 @@ each	<@:[ cV each ]		[: *./@:; <@:[ vbV each ]		Must be coerceable to parameter 
 every	<@:[ cV every ]		[ vV"_ >@:]			Must be parameter type %s leaves boxed (use each instead normally)
 d	maybenum@[		0 < #@]				Default value is %s
 dv	4 : '(x eval)"_ y'		0 < #@]				Default value is verb(named if compound) '' %s ''(applied to null) or value of '' %s '' within locale if not specified
-cut	[:>[:cut leaf/ ([: <"_1 ({&a.)^:(1 4  e.~ 3!:0)@:linearize@:maybenum@:[) (, <) ]	0<L.@:]	Must be boxed or string will be repeatedly cut by %s (if list must be numberic. if numeric, numbers are ascii values)
+cut	multicut			0<L.@:]				Must be boxed or string will be repeatedly cut by %s (if list must be numberic. if numeric, numbers are ascii values)
 copies	maybenum@:[ copylist ]	maybenum@:[ copylistV  ]	 	Must have at least as many items as in(%s), and each NUMBER in %s will copy that position (if blank) from the index at that position (if it exists)
 evalto	'unconvertable' raiseErr ]	4 : 'a=. y eval label_. (maybenum x) =  4!:0 <''a''' 	Str expression must eval to name class %s. 0 noun, 1 adverb, 2 conjunction, 3 verb
 level	<@:]^:(maybenum@:[ - L.@:])	maybenum@:[ = L.@:]			boxed Level (L.) must be %s .

@@ -40,10 +40,14 @@ NB. (form '_' joinB 'button';~ n, 'C') =:  (c ql ' & ebN' locs__f) &ebN @:form2d
 NB.('_' joinB 'button';~ n, 'C') =: c&ebN__f@:form2data end. end.
 y
 )
+NB. not needed for recordform.
 form2data =: 3 : 0 NB. y is wdq
+try. wd 'psel ', form 
+pD formlets
  for_f. formlets do. ks =.  (a: (boxopen&.>@:,&<) <']' ) rplc~"1 ({. ,  {:)@:(3&{.) &>(#~ (<'edit') e.~ 1&{ &>) CONTROLS__f
    ks
    for_k. ks do. ({. k) assign__f each ( {: k) apply each ({:"1 #~ ('C' ,~ each {. k ) e.~ {."1) y end. end.
+catch. end.
 y
 )
 
