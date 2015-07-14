@@ -125,17 +125,17 @@ start_consoleform_ co
 )
 rcb =: 3 : 0
 if. a: -: y do. y return. end.
-pD CONTROLS__r
-
- pD  (LF,'|,') unmulticut (',|',LF) (multicut ) (LF,'|,') unmulticut <"1 y
-pD lr (LF,'|,')  unmulticut <"1 y
-NB. wd__r S:0 setCtrl__r/ pD (recordF__PARAMS CONTROLS__r) ;  (LF,'|,') unmulticut <"1 y
-pD RETURN__r
+NB. pD CONTROLS__r
+NB.
+NB.  pD  (LF,'|,') unmulticut (',|',LF) (multicut ) (LF,'|,') unmulticut <"1 y
+NB. pD lr (LF,'|,')  unmulticut <"1 y
+NB. NB. wd__r S:0 setCtrl__r/ pD (recordF__PARAMS CONTROLS__r) ;  (LF,'|,') unmulticut <"1 y
+NB. pD RETURN__r
 wd 'psel ', form__r 
 'fields updated if auto is set' hout__co  > cutLF (LF,'|,') unmulticut <"1 y
 NB.wd 'psel ', form__r 
-NB.if. '__' -.@-: recordF__PARAMS RETURN__r do. wd__r  'set recordFC text *',  (LF,'|,') unmulticut <"1 y end.
-if. '__' -.@-: recordF__PARAMS RETURN__r do. wd__r S:0 setCtrl__r/ pD (recordF__PARAMS CONTROLS__r) ;  (LF,'|,') unmulticut <"1 y end.
+if. '__' -.@-: recordF__PARAMS RETURN__r do. wd__r  'set recordFC text *',  (LF,'|,') unmulticut <"1 y end.
+NB.if. '__' -.@-: recordF__PARAMS RETURN__r do. wd__r S:0 setCtrl__r/ pD (recordF__PARAMS CONTROLS__r) ;  (LF,'|,') unmulticut <"1 y end.
 y
 )
 fcb =: 3 : 0
