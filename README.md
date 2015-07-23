@@ -86,4 +86,4 @@ go_todo_  a:  NB. sample combination todo, calendar, project management toy.  Sh
 
 the project at https://github.com/Pascal-J/rabin-key-gen uses recordforms to create encryption keys, and is an example of collecting many parameters so as to run multiple function sequences.  The keygen.ijs file also shows a coding style for multiline definitions of forms that are more readable if not using the formbuilder to read/edit them.
 
-current release works in j803 and j804, though there is a small bug in the Fields callback function (related to edith) that only affect j804, and some of the code's current state is so as not to crash j804.  Previous versions worked in j802 as well.
+current release works in j803 and j804, Previous versions worked in j802 as well.  small todo: actively erase more objects.
