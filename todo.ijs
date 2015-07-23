@@ -135,7 +135,7 @@ wd 'psel ', form__r
 'fields updated if auto is set' hout__co  > cutLF (LF,'|,') unmulticut <"1 y
 NB.wd 'psel ', form__r 
 if. '__' -.@-: recordF__PARAMS RETURN__r do. wd__r  'set recordFC text *',  (LF,'|,') unmulticut <"1 y end.
-NB.if. '__' -.@-: recordF__PARAMS RETURN__r do. wd__r S:0 setCtrl__r/ pD (recordF__PARAMS CONTROLS__r) ;  (LF,'|,') unmulticut <"1 y end.
+NB.if. '__' -.@-: recordF__PARAMS RETURN__r do. wd S:0 setCtrl__r/ pD (recordF__PARAMS CONTROLS__r) ;  (LF,'|,') unmulticut <"1 y end.
 y
 )
 fcb =: 3 : 0

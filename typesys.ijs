@@ -13,7 +13,7 @@ Note 'towards a J type system'
 
 assign_z_ =: 4 : '(x) =: y'
 
-amdt_z_ =: 2 : '(u (v{ ]))`(v"_@:])`]} ]' NB. use u@] for monad amenditems, u@[ for function applied to y instead of v{y.  or u for dyad amenditem.
+amdt_z_ =: 2 : '(u"_ (v{ ]))`(v"_@:])`]} ]' NB. use u@] for monad amenditems, u@[ for function applied to y instead of v{y.  or u for dyad amenditem.
 ORassign_z_ =: assign`(".@[)@.(_1 < 4!:0@<@[)
 assignwith_z_ =: 1 : ('y assign u (y~ [ ]) :: ((i.0)"1) 1';':';'y assign x u (y~ [ ]) :: ((i.0)"1) 1')
 assignwithC_z_ =: 2 : ('y assign u (y~ [ ]) :: (n"_) 1';':';'y assign x u (y~ [ ]) :: (n"_) 1 ')
@@ -130,8 +130,8 @@ every	<@:[ cV every ]		[ vV"_ >@:]			Must be parameter type %s leaves boxed (use
 d	maybenum@[		0 < #@]				Default value is %s
 dv	4 : '(x eval)"_ y'		0 < #@]				Default value is verb(named if compound) '' %s ''(applied to null) or value of '' %s '' within locale if not specified
 cut	multicut			0<L.@:]				Must be boxed or string will be repeatedly cut by %s (if list must be numberic. if numeric, numbers are ascii values)
-copies	maybenum@:[ copylist ]	maybenum@:[ copylistV  ]	 	Must have at least as many items as in(%s), and each NUMBER in %s will copy that position (if blank) from the index at that position (if it exists)
-evalto	'unconvertable' raiseErr ]	4 : 'a=. y eval label_. (maybenum x) =  4!:0 <''a''' 	Str expression must eval to name class %s. 0 noun, 1 adverb, 2 conjunction, 3 verb
+copies	maybenum@:[ copylist ]	maybenum@:[ copylistV ]		Must have at least as many items as in(%s), and each NUMBER in %s will copy that position (if blank) from the index at that position (if it exists)
+evalto	'unconvertable' raiseErr ]	4 : 'a=. y eval label_.(maybenum x) = 4!:0 <''a'''	Str expression must eval to name class %s. 0 noun, 1 adverb, 2 conjunction, 3 verb
 level	<@:]^:(maybenum@:[ - L.@:])	maybenum@:[ = L.@:]			boxed Level (L.) must be %s .
 )
 NB. alternates:

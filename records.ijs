@@ -258,6 +258,7 @@ OK =: 3 : 0
  if. chkformvalid RETURN do. pD t =.  ((  ((# LXnames__R) {. ((<'ignore') = type__CONTROL each) CONTROLS)) } (0 ,: +/@:(0&".) every  ". each ('SEL' ,~ leaf LXnames__R)) ) } a: ,:~ RETURN 
   x (4 : 'x~ y')`(callback@:])@.(0-:[) t=. ((  ((# LXnames__R) {. ((;:'auto autom') e.~ type__CONTROL each) CONTROLS)) } (0 ,: +/@:(0&".) every  ". each ('SEL' ,~ leaf LXnames__R)) ) }  (<'__') ,:~ t
  NB.callback RETURN
+   wd 'psel ', form
    a=. ((  ((# LXnames__R) {. ((<'clear') = type__CONTROL each) CONTROLS)) } (0 ,: +/@:(0&".) every  ". each ('SEL' ,~ leaf LXnames__R)) )
   if. +./ a do. RETURN =:  a }  (initvals__FORMPARAMS fparams) ,:~ RETURN 
     reset '' end.
